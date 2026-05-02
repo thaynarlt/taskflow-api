@@ -106,7 +106,8 @@ taskflow/
 
 ## Integrantes da equipe
 
-- _A preencher_
+- Eduardo Bellini
+- Thayná Tolentino
 
 ## Status do projeto
 
