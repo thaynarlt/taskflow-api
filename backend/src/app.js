@@ -4,8 +4,10 @@ const cors = require('cors');
 const tasksRouter = require('./routes/tasks');
 
 const app = express();
+app.disable('x-powered-by');
 
-app.use(cors());
+const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:8080';
+app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 
 app.get('/health', (req, res) => {
