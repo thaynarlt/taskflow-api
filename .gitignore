@@ -26,3 +26,5 @@ build/
 
 # Docker
 *.pid
+
+backend/coverage/
