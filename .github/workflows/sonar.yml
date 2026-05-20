@@ -10,7 +10,7 @@ on:
 
 jobs:
   sonarcloud:
-    name: Build and Analyze
+    name: Build, Test and Analyze
     runs-on: ubuntu-latest
     
     steps:
@@ -30,11 +30,13 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
-      # (Opcional) Quando houver testes, descomentar para gerar cobertura para o Sonar
-      # - name: Rodar testes do backend
-      #   working-directory: ./backend
-      #   run: npm test -- --coverage
-        
+     - name: Rodar testes do backend
+        working-directory: ./backend
+        run: npm test
+
+      - name: Validar build dos containers
+        run: docker compose build
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:

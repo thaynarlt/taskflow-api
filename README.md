@@ -1,5 +1,8 @@
 # TaskFlow
 
+[![CI](https://github.com/thaynarlt/taskflow-api/actions/workflows/sonar.yml/badge.svg)](https://github.com/thaynarlt/taskflow-api/actions/workflows/sonar.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thaynarlt_taskflow-api&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=thaynarlt_taskflow-api)
+
 Sistema web para gerenciamento de tarefas de uma equipe, desenvolvido como projeto da disciplina de DevOps.
 
 ## Descricao do projeto
@@ -19,6 +22,8 @@ Centralizar e organizar o controle das tarefas de uma equipe em um unico lugar, 
 - **Orquestracao local:** Docker Compose
 - **Versionamento:** Git e GitHub
 - **Fluxo de trabalho:** GitFlow
+- **CI/CD:** GitHub Actions
+- **Qualidade de codigo:** SonarCloud
 
 ## Estrutura do projeto
 
@@ -98,6 +103,23 @@ taskflow/
 | DELETE | `/api/tasks/:id` | Remove uma tarefa |
 | GET | `/health` | Health-check do backend |
 
+## CI/CD
+
+O projeto usa **GitHub Actions** para integracao continua. O workflow esta em [.github/workflows/sonar.yml](.github/workflows/sonar.yml) e e disparado em:
+
+- `push` para `main` e `develop`
+- `pull_request` para `main` e `develop`
+
+O pipeline faz checkout do repositorio, instala as dependencias do backend (`npm ci`) e dispara a analise no SonarCloud usando o secret `SONAR_TOKEN`.
+
+## Qualidade de codigo
+
+A analise estatica e feita pelo **SonarCloud**, integrado ao pipeline do GitHub Actions. O dashboard publico esta em:
+
+https://sonarcloud.io/project/overview?id=thaynarlt_taskflow-api
+
+O Quality Gate cobre bugs, vulnerabilidades, code smells, hotspots de seguranca e duplicacao de codigo.
+
 ## Fluxo de trabalho (GitFlow)
 
 - `main`: branch estavel, recebe as releases.
@@ -110,4 +132,5 @@ taskflow/
 
 ## Status do projeto
 
-Etapa 1 (Estruturacao do ambiente e conteinerizacao) - concluida.
+- Etapa 1 (Estruturacao do ambiente e conteinerizacao) - concluida.
+- Entrega final (CI com GitHub Actions + analise SonarCloud) - concluida.
