@@ -30,7 +30,7 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
-     - name: Rodar testes do backend
+      - name: Rodar testes do backend
         working-directory: ./backend
         run: npm test
 
