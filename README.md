@@ -29,23 +29,32 @@ Centralizar e organizar o controle das tarefas de uma equipe em um unico lugar, 
 
 ```
 taskflow/
-|-- backend/                # API Node.js + Express
+|-- .github/
+|   `-- workflows/
+|       `-- sonar.yml          # Pipeline do GitHub Actions (build, testes, Sonar)
+|-- backend/                   # API Node.js + Express
 |   |-- src/
 |   |   |-- routes/
-|   |   |   `-- tasks.js    # Rotas do CRUD de tarefas
-|   |   |-- db.js           # Conexao com o PostgreSQL
-|   |   `-- server.js       # Inicializacao do servidor
+|   |   |   `-- tasks.js       # Rotas do CRUD de tarefas
+|   |   |-- __tests__/
+|   |   |   |-- health.test.js # Teste do endpoint /health
+|   |   |   `-- tasks.test.js  # Testes do CRUD de tarefas
+|   |   |-- app.js             # Aplicacao Express (exportavel para testes)
+|   |   |-- db.js              # Conexao com o PostgreSQL
+|   |   `-- server.js          # Inicializacao do servidor
 |   |-- Dockerfile
+|   |-- jest.config.js         # Configuracao do Jest
 |   `-- package.json
-|-- frontend/               # Interface estatica servida por Nginx
+|-- frontend/                  # Interface estatica servida por Nginx
 |   |-- css/style.css
 |   |-- js/app.js
 |   |-- index.html
 |   |-- nginx.conf
 |   `-- Dockerfile
 |-- database/
-|   `-- init.sql            # Script de criacao da tabela tasks
-|-- docker-compose.yml      # Orquestracao dos servicos
+|   `-- init.sql               # Script de criacao da tabela tasks
+|-- docker-compose.yml         # Orquestracao dos servicos
+|-- sonar-project.properties   # Configuracao do SonarCloud
 |-- .gitignore
 `-- README.md
 ```
@@ -110,7 +119,35 @@ O projeto usa **GitHub Actions** para integracao continua. O workflow esta em [.
 - `push` para `main` e `develop`
 - `pull_request` para `main` e `develop`
 
-O pipeline faz checkout do repositorio, instala as dependencias do backend (`npm ci`) e dispara a analise no SonarCloud usando o secret `SONAR_TOKEN`.
+O pipeline executa as seguintes etapas:
+
+1. Checkout do repositorio (com `fetch-depth: 0` para o Sonar analisar o historico completo).
+2. Configuracao do Node.js 20 com cache do `package-lock.json`.
+3. Instalacao das dependencias do backend (`npm ci`).
+4. Execucao dos testes automatizados com cobertura (`npm test`).
+5. Validacao do build dos 3 containers (`docker compose build`).
+6. Analise estatica no SonarCloud usando o secret `SONAR_TOKEN`.
+
+## Testes
+
+O backend possui testes automatizados com **Jest** e **supertest**, organizados em `backend/src/__tests__/`.
+
+Para rodar localmente:
+
+```bash
+cd backend
+npm install
+npm test
+```
+
+O comando `npm test` executa a suite com `--coverage`, gerando o relatorio em `backend/coverage/lcov.info`, que e consumido pelo SonarCloud no pipeline.
+
+Cenarios cobertos:
+
+- `GET /health` retorna 200 com o payload de status.
+- `GET /api/tasks` retorna a lista de tarefas.
+- `POST /api/tasks` sem `titulo` retorna 400.
+- `GET /api/tasks/:id` inexistente retorna 404.
 
 ## Qualidade de codigo
 
