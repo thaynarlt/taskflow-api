@@ -12,20 +12,33 @@ const cancelBtn = document.getElementById('cancel-btn');
 const formTitle = document.getElementById('form-titulo');
 const taskList = document.getElementById('task-list');
 const filterStatus = document.getElementById('filter-status');
+const totalCount = document.getElementById('total-count');
+const pendingCount = document.getElementById('pending-count');
+const progressCount = document.getElementById('progress-count');
+const completeCount = document.getElementById('complete-count');
 
 async function fetchTasks() {
   const status = filterStatus.value;
   const url = status ? `${API_URL}?status=${encodeURIComponent(status)}` : API_URL;
-  const res = await fetch(url);
-  if (!res.ok) {
+  taskList.innerHTML = '<li class="empty loading">Carregando tarefas...</li>';
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      updateCounters([]);
+      taskList.innerHTML = '<li class="empty">Erro ao carregar tarefas.</li>';
+      return;
+    }
+    const tasks = await res.json();
+    renderTasks(tasks);
+  } catch (error) {
+    updateCounters([]);
     taskList.innerHTML = '<li class="empty">Erro ao carregar tarefas.</li>';
-    return;
   }
-  const tasks = await res.json();
-  renderTasks(tasks);
 }
 
 function renderTasks(tasks) {
+  updateCounters(tasks);
   if (tasks.length === 0) {
     taskList.innerHTML = '<li class="empty">Nenhuma tarefa cadastrada.</li>';
     return;
@@ -53,6 +66,13 @@ function renderTasks(tasks) {
   }).join('');
 }
 
+function updateCounters(tasks) {
+  totalCount.textContent = tasks.length;
+  pendingCount.textContent = tasks.filter((task) => task.status === 'pendente').length;
+  progressCount.textContent = tasks.filter((task) => task.status === 'em andamento').length;
+  completeCount.textContent = tasks.filter((task) => task.status === 'concluida').length;
+}
+
 function escapeHtml(str) {
   if (str == null) return '';
   return String(str).replace(/[&<>"']/g, (c) => ({
@@ -73,19 +93,28 @@ form.addEventListener('submit', async (e) => {
 
   const url = id ? `${API_URL}/${id}` : API_URL;
   const method = id ? 'PUT' : 'POST';
+  submitBtn.disabled = true;
+  submitBtn.textContent = id ? 'Atualizando...' : 'Salvando...';
 
-  const res = await fetch(url, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-  if (!res.ok) {
+    if (!res.ok) {
+      alert('Erro ao salvar tarefa.');
+      return;
+    }
+    resetForm();
+    fetchTasks();
+  } catch (error) {
     alert('Erro ao salvar tarefa.');
-    return;
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = taskIdInput.value ? 'Atualizar' : 'Salvar tarefa';
   }
-  resetForm();
-  fetchTasks();
 });
 
 cancelBtn.addEventListener('click', resetForm);
@@ -97,8 +126,24 @@ taskList.addEventListener('click', async (e) => {
   if (!id) return;
   if (e.target.classList.contains('delete')) {
     if (!confirm('Excluir esta tarefa?')) return;
-    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-    fetchTasks();
+    const button = e.target;
+    button.disabled = true;
+    button.textContent = 'Excluindo...';
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        alert('Erro ao excluir tarefa.');
+        return;
+      }
+      fetchTasks();
+    } catch (error) {
+      alert('Erro ao excluir tarefa.');
+    } finally {
+      if (button.isConnected) {
+        button.disabled = false;
+        button.textContent = 'Excluir';
+      }
+    }
   } else if (e.target.classList.contains('edit')) {
     const res = await fetch(`${API_URL}/${id}`);
     if (!res.ok) return;
@@ -120,7 +165,7 @@ function resetForm() {
   form.reset();
   taskIdInput.value = '';
   formTitle.textContent = 'Nova tarefa';
-  submitBtn.textContent = 'Salvar';
+  submitBtn.textContent = 'Salvar tarefa';
   cancelBtn.hidden = true;
 }
 
