@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <div class="glow glow-left" aria-hidden="true"></div>
+  <div class="glow glow-right" aria-hidden="true"></div>
+
   <header class="hero">
     <nav class="topbar">
       <a class="brand" href="#" aria-label="TaskFlow inicio">
@@ -38,28 +41,36 @@
     </div>
   </header>
 
-  <main>
-    <section class="card">
-      <h2 id="form-titulo">Nova tarefa</h2>
+  <main class="dashboard">
+    <section class="card form-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Editor</p>
+          <h2 id="form-titulo">Nova tarefa</h2>
+        </div>
+        <span class="section-icon" aria-hidden="true">+</span>
+      </div>
       <form id="task-form">
         <input type="hidden" id="task-id" />
-        <label>
+        <label class="wide">
           Titulo
-          <input type="text" id="titulo" required />
+          <input type="text" id="titulo" placeholder="Ex.: Preparar demonstracao" required />
         </label>
-        <label>
+        <label class="wide">
           Descricao
-          <textarea id="descricao" rows="3"></textarea>
+          <textarea id="descricao" rows="3" placeholder="Descreva o que precisa ser entregue..."></textarea>
         </label>
-        <label>
-          Responsavel
-          <input type="text" id="responsavel" />
-        </label>
-        <label>
-          Prazo
-          <input type="date" id="prazo" />
-        </label>
-        <label>
+        <div class="field-grid">
+          <label>
+            Responsavel
+            <input type="text" id="responsavel" placeholder="Nome da pessoa" />
+          </label>
+          <label>
+            Prazo
+            <input type="date" id="prazo" />
+          </label>
+        </div>
+        <label class="wide">
           Status
           <select id="status">
             <option value="pendente">Pendente</option>
@@ -68,23 +79,50 @@
           </select>
         </label>
         <div class="actions">
-          <button type="submit" id="submit-btn">Salvar</button>
+          <button type="submit" id="submit-btn">Salvar tarefa</button>
           <button type="button" id="cancel-btn" class="secondary" hidden>Cancelar</button>
         </div>
       </form>
     </section>
 
-    <section class="card">
-      <div class="list-header">
-        <h2>Tarefas</h2>
-        <select id="filter-status">
-          <option value="">Todos os status</option>
-          <option value="pendente">Pendente</option>
-          <option value="em andamento">Em andamento</option>
-          <option value="concluida">Concluida</option>
-        </select>
+    <section class="workspace">
+      <div class="metrics" aria-label="Resumo de tarefas exibidas">
+        <article class="metric">
+          <p>Exibidas</p>
+          <strong id="total-count">0</strong>
+        </article>
+        <article class="metric pending">
+          <p>Pendentes</p>
+          <strong id="pending-count">0</strong>
+        </article>
+        <article class="metric working">
+          <p>Em andamento</p>
+          <strong id="progress-count">0</strong>
+        </article>
+        <article class="metric done">
+          <p>Concluidas</p>
+          <strong id="complete-count">0</strong>
+        </article>
       </div>
-      <ul id="task-list"></ul>
+
+      <section class="card list-card">
+        <div class="list-header">
+          <div>
+            <p class="eyebrow">Board</p>
+            <h2>Tarefas</h2>
+          </div>
+          <label class="filter">
+            Filtrar por status
+            <select id="filter-status">
+              <option value="">Todos os status</option>
+              <option value="pendente">Pendente</option>
+              <option value="em andamento">Em andamento</option>
+              <option value="concluida">Concluida</option>
+            </select>
+          </label>
+        </div>
+        <ul id="task-list" aria-live="polite"></ul>
+      </section>
     </section>
   </main>
 
