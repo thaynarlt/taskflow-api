@@ -11,19 +11,142 @@ body {
   min-height: 100vh;
 }
 
-header {
-  background: #2563eb;
+.hero {
+  background: #081121;
   color: white;
-  padding: 1.5rem 2rem;
+  padding: 26px max(calc((100% - 904px) / 2), 16px) 30px;
 }
 
-header h1 {
-  font-size: 1.75rem;
+.topbar {
+  align-items: center;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.17);
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 24px;
 }
 
-header p {
-  opacity: 0.85;
-  font-size: 0.95rem;
+.brand {
+  align-items: center;
+  color: white;
+  display: inline-flex;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-mark {
+  align-items: center;
+  background: linear-gradient(135deg, #8f82ff, #39a6ff);
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(109, 94, 252, 0.38);
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 700;
+  height: 46px;
+  justify-content: center;
+  width: 46px;
+}
+
+.brand strong {
+  display: block;
+  font-size: 1.12rem;
+}
+
+.brand small {
+  color: #91a4c2;
+  display: block;
+  font-size: 0.77rem;
+}
+
+.online-pill {
+  align-items: center;
+  background: rgba(54, 215, 164, 0.1);
+  border: 1px solid rgba(54, 215, 164, 0.18);
+  border-radius: 999px;
+  color: #8ae8c9;
+  display: inline-flex;
+  font-size: 0.83rem;
+  gap: 8px;
+  padding: 10px 16px;
+}
+
+.online-pill span {
+  background: #36d7a4;
+  border-radius: 50%;
+  height: 8px;
+  width: 8px;
+}
+
+.hero-content {
+  align-items: end;
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
+  padding-top: 34px;
+}
+
+.eyebrow {
+  color: #8f82ff;
+  font-size: 0.71rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  margin-bottom: 11px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: clamp(2.1rem, 4.5vw, 3.3rem);
+  letter-spacing: -0.065em;
+  line-height: 1.08;
+  max-width: 590px;
+}
+
+.hero h1 span {
+  background: linear-gradient(100deg, #a69dff, #45baff);
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-description {
+  color: #91a4c2;
+  font-size: 1rem;
+  line-height: 1.65;
+  margin-top: 15px;
+  max-width: 520px;
+}
+
+.hero-card {
+  background: rgba(18, 31, 55, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.17);
+  border-radius: 18px;
+  flex-shrink: 0;
+  padding: 18px 20px;
+}
+
+.hero-card p {
+  color: #91a4c2;
+  font-size: 0.76rem;
+  margin-bottom: 13px;
+  text-transform: uppercase;
+}
+
+.workflow {
+  align-items: center;
+  display: flex;
+  gap: 11px;
+}
+
+.workflow span {
+  color: #bdcbe0;
+  font-size: 0.78rem;
+}
+
+.workflow i {
+  background: #6d5efc;
+  border-radius: 50%;
+  display: inline-block;
+  height: 5px;
+  opacity: 0.72;
+  width: 5px;
 }
 
 main {
